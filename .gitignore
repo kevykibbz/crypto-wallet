@@ -1,0 +1,8 @@
+logs/
+json/
+csv/
+docs/
+downloads/
+images/
+.env
+settings.py

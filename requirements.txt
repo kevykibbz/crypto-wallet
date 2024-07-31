@@ -1,0 +1,7 @@
+dropbox
+colorama
+boto3
+web3 
+requests
+pandas
+BeautifulSoup

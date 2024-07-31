@@ -102,6 +102,7 @@ case "$choice" in
                 # Prompt to continue after cleanup
                 echo ""
                 echo -e "> ${YELLOW}?${NC} Do you wish to continue (yes/no)?"
+                echo ""
                 read -p "Please enter your choice: " choice
 
                 case "$choice" in

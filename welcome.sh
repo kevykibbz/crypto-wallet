@@ -87,6 +87,8 @@ case "$choice" in
             echo ""
             python scripts/access_token.py
             
+            python scripts/folders.py
+            
             python scripts/dropbox_files.py
 
             python scripts/ocr.py

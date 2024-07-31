@@ -40,9 +40,9 @@ textract_client = boto3.client('textract',
                                region_name=AWS_REGION)
 
 # Directory containing the files to upload and analyze
-downloads_dir = './downloads'
-json_dir = './json'
-csv_dir = './csv'
+downloads_dir = '../downloads'
+json_dir = '../json'
+csv_dir = '../csv'
 
 # Ensure the JSON and CSV directories exist
 os.makedirs(json_dir, exist_ok=True)
@@ -136,7 +136,7 @@ while True:
     time.sleep(5)
 
 if status == 'SUCCEEDED':
-    print(f"{GREEN}> ✓ Job succeeded.{NC}\n")
+    print(f"{GREEN}> [OK] Job succeeded.{NC}\n")
     sys.stdout.flush()
 
     # Get the results
@@ -199,13 +199,19 @@ if status == 'SUCCEEDED':
     json_file_path = os.path.join(json_dir, f"{os.path.splitext(file_list[0])[0]}.json")
     with open(json_file_path, 'w') as json_file:
         json.dump(kv_pairs, json_file, indent=4)
+    print(f"{GREEN}> [OK] File successfully converted to JSON and saved at {json_file_path}{NC}")
+    print("")
+    sys.stdout.flush()
     
     # Convert JSON to CSV
     df = pd.DataFrame.from_dict(kv_pairs, orient='index', columns=['Value'])
     csv_file_path = os.path.join(csv_dir, f"{os.path.splitext(file_list[0])[0]}.csv")
     df.to_csv(csv_file_path, index_label='Key')
+    print(f"{GREEN}> [OK] File successfully converted to CSV and saved at {csv_file_path}{NC}")
+    print("")
+    sys.stdout.flush()
 
-    print(f"{GREEN}> ✓ Finalizing...{NC}\n")
+    print(f"{GREEN}> [OK] Finalizing...{NC}\n")
     sys.stdout.flush()
 
 else:

